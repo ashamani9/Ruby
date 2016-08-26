@@ -1,7 +1,6 @@
+#Printing numbers
 i = 0
 numbers = []
-
-#for i in 0..6
 while i < 6 
  puts "At the top of i is:#{i}"
   numbers.push(i)
