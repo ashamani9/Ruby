@@ -1,0 +1,331 @@
+mysql> SHOW databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| test               |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> create database asha;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| asha               |
+| mysql              |
+| performance_schema |
+| sys                |
+| test               |
++--------------------+
+6 rows in set (0.00 sec)
+
+mysql> use asha;
+Database changed
+mysql> create table CUSTOMERS(CUST_ID INT, CUST_NAME VARCHAR(20),AGE INT(3),ADDRESS CHAR(25),SALARY DECIMAL(10,2));
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> DESC CUSTOMERS;
++-----------+---------------+------+-----+---------+-------+
+| Field     | Type          | Null | Key | Default | Extra |
++-----------+---------------+------+-----+---------+-------+
+| CUST_ID   | int(11)       | YES  |     | NULL    |       |
+| CUST_NAME | varchar(20)   | YES  |     | NULL    |       |
+| AGE       | int(3)        | YES  |     | NULL    |       |
+| ADDRESS   | char(25)      | YES  |     | NULL    |       |
+| SALARY    | decimal(10,2) | YES  |     | NULL    |       |
++-----------+---------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> ALTER TABLE CUSTOMERS MODIFY CUST_ID NOT NULL;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'NOT NULL' at line 1
+mysql> ALTER TABLE CUSTOMERS MODIFY CUST_ID INT NOT NULL;
+Query OK, 0 rows affected (0.15 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql> INSERT INTO CUSTOMERS VALUES(111,'ASHA',22,'VISAKHAPATNAM',15000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO CUSTOMERS VALUES(121,'SRI',24,'VIJAYAWADA',18000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO CUSTOMERS VALUES(121,'SIRI',25,'',22000);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO CUSTOMERS VALUES(131,'APPU',23,'VISAKHAPATNAM',16000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO CUSTOMERS VALUES(141,'SANJU',26,'HYDERABAD',25000);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> COMMIT;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> DESC CUSTOMERS;
++-----------+---------------+------+-----+---------+-------+
+| Field     | Type          | Null | Key | Default | Extra |
++-----------+---------------+------+-----+---------+-------+
+| CUST_ID   | int(11)       | YES  |     | NULL    |       |
+| CUST_NAME | varchar(20)   | YES  |     | NULL    |       |
+| AGE       | int(3)        | YES  |     | NULL    |       |
+| ADDRESS   | char(25)      | YES  |     | NULL    |       |
+| SALARY    | decimal(10,2) | YES  |     | NULL    |       |
++-----------+---------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM CUSTOMERS;
++---------+-----------+------+---------------+----------+
+| CUST_ID | CUST_NAME | AGE  | ADDRESS       | SALARY   |
++---------+-----------+------+---------------+----------+
+|     111 | ASHA      |   22 | VISAKHAPATNAM | 15000.00 |
+|     121 | SRI       |   24 | VIJAYAWADA    | 18000.00 |
+|     121 | SIRI      |   25 |               | 22000.00 |
+|     131 | APPU      |   23 | VISAKHAPATNAM | 16000.00 |
+|     141 | SANJU     |   26 | HYDERABAD     | 25000.00 |
++---------+-----------+------+---------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> UPDATE CUSTOMERS SET ADDRESS='KAKINADA' WHERE AGE=25;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+
+mysql> SELECT * FROM CUSTOMERS;
++---------+-----------+------+---------------+----------+
+| CUST_ID | CUST_NAME | AGE  | ADDRESS       | SALARY   |
++---------+-----------+------+---------------+----------+
+|     111 | ASHA      |   22 | VISAKHAPATNAM | 15000.00 |
+|     121 | SRI       |   24 | VIJAYAWADA    | 18000.00 |
+|     122 | SIRI      |   25 | KAKINADA      | 22000.00 |
+|     131 | APPU      |   23 | VISAKHAPATNAM | 16000.00 |
+|     141 | SANJU     |   26 | HYDERABAD     | 25000.00 |
++---------+-----------+------+---------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> START TRANSACTION;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> UPDATE CUSTOMERS SET ADDRESS='BANGALORE' WHERE AGE=25;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> ROLLBACK;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> SELECT * FROM CUSTOMERS;
++---------+-----------+------+---------------+----------+
+| CUST_ID | CUST_NAME | AGE  | ADDRESS       | SALARY   |
++---------+-----------+------+---------------+----------+
+|     111 | ASHA      |   22 | VISAKHAPATNAM | 15000.00 |
+|     121 | SRI       |   24 | VIJAYAWADA    | 18000.00 |
+|     122 | SIRI      |   25 | KAKINADA      | 22000.00 |
+|     131 | APPU      |   23 | VISAKHAPATNAM | 16000.00 |
+|     141 | SANJU     |   26 | HYDERABAD     | 25000.00 |
++---------+-----------+------+---------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> CREATE TABLE ORDERS(ORD_ID INT,CUSTOMER_ID INT,DATE DATETIME,AMOUNT DOUBLE,PRIMARY KEY(ORD_ID));
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> ALTER TABLE ORDERS ADD FOREIGN KEY(CUSTOMER_ID) REFERENCES CUSTOMERS(CUST_ID);
+Query OK, 0 rows affected (0.23 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> DESC ORDERS;
++-------------+----------+------+-----+---------+-------+
+| Field       | Type     | Null | Key | Default | Extra |
++-------------+----------+------+-----+---------+-------+
+| ORD_ID      | int(11)  | NO   | PRI | NULL    |       |
+| CUSTOMER_ID | int(11)  | YES  | MUL | NULL    |       |
+| DATE        | datetime | YES  |     | NULL    |       |
+| AMOUNT      | double   | YES  |     | NULL    |       |
++-------------+----------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> INSERT INTO ORDERS VALUES(11,121,'2016-08-23',1200);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO ORDERS VALUES(12,141,'2015-09-08',1500);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO ORDERS VALUES(13,141,'2015-10-24',1900);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO ORDERS VALUES(14,122,'2016-08-13',1400);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM ORDERS;
++--------+-------------+---------------------+--------+
+| ORD_ID | CUSTOMER_ID | DATE                | AMOUNT |
++--------+-------------+---------------------+--------+
+|     11 |         121 | 2016-08-23 00:00:00 |   1200 |
+|     12 |         141 | 2015-09-08 00:00:00 |   1500 |
+|     13 |         141 | 2015-10-24 00:00:00 |   1900 |
+|     14 |         122 | 2016-08-13 00:00:00 |   1400 |
++--------+-------------+---------------------+--------+
+4 rows in set (0.00 sec)
+
+mysql> INSERT INTO ORDERS VALUES(15,121,'2016-08-13',1100);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO ORDERS VALUES(16,122,'2016-08-21',1000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM ORDERS;
++--------+-------------+---------------------+--------+
+| ORD_ID | CUSTOMER_ID | DATE                | AMOUNT |
++--------+-------------+---------------------+--------+
+|     11 |         121 | 2016-08-23 00:00:00 |   1200 |
+|     12 |         141 | 2015-09-08 00:00:00 |   1500 |
+|     13 |         141 | 2015-10-24 00:00:00 |   1900 |
+|     14 |         122 | 2016-08-13 00:00:00 |   1400 |
+|     15 |         121 | 2016-08-13 00:00:00 |   1100 |
+|     16 |         122 | 2016-08-21 00:00:00 |   1000 |
++--------+-------------+---------------------+--------+
+6 rows in set (0.00 sec)
+
+mysql> USE asha;
+Database changed
+mysql> CREATE TABLE ITEM(ITEM_ID INT,ORDER_ID INT,ITEM_NAME VARCHAR(20),AMOUNT DOUBLE);
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> ALTER TABLE ITEM ADD PRIMARY KEY(ITEM_ID);
+Query OK, 0 rows affected (0.15 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE ITEM ADD FOREIGN KEY(ORDER_ID) REFERENCES ORDERS(ORD_ID);
+Query OK, 0 rows affected (0.23 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> DESC ITEM;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| ITEM_ID   | int(11)     | NO   | PRI | NULL    |       |
+| ORDER_ID  | int(11)     | YES  | MUL | NULL    |       |
+| ITEM_NAME | varchar(20) | YES  |     | NULL    |       |
+| AMOUNT    | double      | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> INSERT INTO ITEM VALUES(2134,13,'CHAIR',1500);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> UPDATE ITEM SET AMOUNT=1900 WHERE ORDER_ID=13;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM ITEM;
++---------+----------+-----------+--------+
+| ITEM_ID | ORDER_ID | ITEM_NAME | AMOUNT |
++---------+----------+-----------+--------+
+|    2134 |       13 | CHAIR     |   1900 |
++---------+----------+-----------+--------+
+1 row in set (0.00 sec)
+
+mysql> INSERT INTO ITEM VALUES(2139,12,'BOOKS',1500);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO ITEM VALUES(2135,13,'TABLE',1900);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> SELECT * FROM ITEM;
++---------+----------+-----------+--------+
+| ITEM_ID | ORDER_ID | ITEM_NAME | AMOUNT |
++---------+----------+-----------+--------+
+|    2134 |       13 | CHAIR     |   1900 |
+|    2135 |       13 | TABLE     |   1900 |
+|    2139 |       12 | BOOKS     |   1500 |
++---------+----------+-----------+--------+
+3 rows in set (0.00 sec)
+
+mysql> INSERT INTO ITEM VALUES(2137,14,'BAG',1400);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM ITEM;
++---------+----------+-----------+--------+
+| ITEM_ID | ORDER_ID | ITEM_NAME | AMOUNT |
++---------+----------+-----------+--------+
+|    2134 |       13 | CHAIR     |   1900 |
+|    2135 |       13 | TABLE     |   1900 |
+|    2137 |       14 | BAG       |   1400 |
+|    2139 |       12 | BOOKS     |   1500 |
++---------+----------+-----------+--------+
+4 rows in set (0.00 sec)
+
+                                              QUERIES
+                                            ---------------
+1. DISPLAY THE MAXIMUM,AVERAGE AND TOTAL SALARY FROM CUSTOMERS TABLE.
+
+mysql> SELECT SUM(PRICE) FROM ITEM;
++------------+
+| SUM(PRICE) |
++------------+
+|       6700 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT MAX(PRICE) FROM ITEM;
++------------+
+| MAX(PRICE) |
++------------+
+|       1900 |
++------------+
+mysql> SELECT AVG(PRICE) FROM ITEM;
++------------+
+| AVG(PRICE) |
++------------+
+|       1675 |
++------------+
+1 row in set (0.00 sec)
+
+2. FIND THE NUMBER OF CUSTOMERS WHOSE SALARY IN BETWEEN 15000 TO 20000.
+
+mysql> SELECT  COUNT(*) AS TOTAL FROM CUSTOMERS WHERE SALARY BETWEEN 15000 AND 20000;
++-------+
+| TOTAL |
++-------+
+|     3 |
++-------+
+1 row in set (0.00 sec)
+
+3.DISPLAY THE CUSTOMER NAMES WHOSE AGE IS GREATER THAN 23.
+
+mysql> SELECT CUST_NAME FROM CUSTOMERS WHERE AGE>23;
++-----------+
+| CUST_NAME |
++-----------+
+| SRI       |
+| SIRI      |
+| SANJU     |
++-----------+
+3 rows in set (0.00 sec)
+
+4.DISPLAY THE CUSTOMER NAME WHOSE NAME STARTS WITH S.
+
+mysql> SELECT CUST_NAME FROM CUSTOMERS WHERE CUST_NAME LIKE "S%";
++-----------+
+| CUST_NAME |
++-----------+
+| SRI       |
+| SIRI      |
+| SANJU     |
++-----------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT * FROM CUSTOMERS WHERE CUST_NAME LIKE "S%";
++---------+-----------+------+------------+----------+
+| CUST_ID | CUST_NAME | AGE  | ADDRESS    | SALARY   |
++---------+-----------+------+------------+----------+
+|     121 | SRI       |   24 | VIJAYAWADA | 18000.00 |
+|     122 | SIRI      |   25 | KAKINADA   | 22000.00 |
+|     141 | SANJU     |   26 | HYDERABAD  | 25000.00 |
++---------+-----------+------+------------+----------+
+3 rows in set (0.00 sec)
+
+
