@@ -1,0 +1,82 @@
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| asha               |
+| exercise           |
+| mysql              |
+| performance_schema |
+| sys                |
+| test               |
++--------------------+
+7 rows in set (0.00 sec)
+
+mysql> use asha;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> SHOW TABLES;
++----------------+
+| Tables_in_asha |
++----------------+
+| PARTS          |
+| PROJECTS       |
+| SPP            |
+| SUPPLIERS      |
++----------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM SUPPLIERS;
++-----+--------+----------+---------------+
+| SID | SNAME  | STATUS   | CITY          |
++-----+--------+----------+---------------+
+| S1  | SRI    | ACTIVE   | LONDON        |
+| S2  | ASHA   | INACTIVE | VISAKHAPATNAM |
+| S3  | YAMUNA | ACTIVE   | BANGALORE     |
+| S4  | RAM    | INACTIVE | LONDON        |
+| S5  | SIRI   | INACTIVE | VISAKHAPATNAM |
+| S6  | TOM    | ACTIVE   | AMARAVATHI    |
++-----+--------+----------+---------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM PARTS;
++-----+-------+-------+--------+---------------+
+| PID | PNAME | COLOR | WEIGHT | CITY          |
++-----+-------+-------+--------+---------------+
+| P1  | PART1 | PINK  | 70KGS  | VISAKHAPATNAM |
+| P2  | PART2 | BLACK | 45KGS  | LONDON        |
+| P3  | PART1 | WHITE | 55KGS  | LONDON        |
+| P4  | PART2 | BLACK | 60KGS  | VISAKHAPATNAM |
+| P5  | PART1 | PINK  | 70KGS  | AMARAVATHI    |
+| P6  | PART2 | WHITE | 55KGS  | HYDERABAD     |
++-----+-------+-------+--------+---------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM PROJECTS;
++-----+----------+---------------+
+| JID | JNAME    | CITY          |
++-----+----------+---------------+
+| J1  | PROJECT1 | LONDON        |
+| J2  | PROJECT2 | LONDON        |
+| J3  | PROJECT3 | AMARAVATHI    |
+| J4  | PROJECT1 | VISAKHAPATNAM |
+| J5  | PROJECT2 | HYDERABAD     |
+| J6  | PROJECT3 | BANGALORE     |
++-----+----------+---------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM SPP;
++-----+-----+-----+----------+
+| SID | PID | JID | QUANTITY |
++-----+-----+-----+----------+
+| S1  | P1  | J1  |      800 |
+| S2  | P3  | J2  |      500 |
+| S3  | P1  | J1  |      600 |
+| S4  | P3  | J2  |      300 |
+| S5  | P4  | J3  |      450 |
++-----+-----+-----+----------+
+5 rows in set (0.00 sec)
+
+

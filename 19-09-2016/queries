@@ -1,0 +1,1039 @@
+1.Get full details of all projects.
+
+mysql> SELECT * FROM PROJECTS;
++-----+----------+---------------+
+| JID | JNAME    | CITY          |
++-----+----------+---------------+
+| J1  | PROJECT1 | LONDON        |
+| J2  | PROJECT2 | LONDON        |
+| J3  | PROJECT3 | AMARAVATHI    |
+| J4  | PROJECT1 | VISAKHAPATNAM |
+| J5  | PROJECT2 | HYDERABAD     |
+| J6  | PROJECT3 | BANGALORE     |
++-----+----------+---------------+
+6 rows in set (0.00 sec)
+
+2. Get full details of all projects in london.
+
+mysql> SELECT * FROM PROJECTS WHERE CITY='LONDON';
++-----+----------+--------+
+| JID | JNAME    | CITY   |
++-----+----------+--------+
+| J1  | PROJECT1 | LONDON |
+| J2  | PROJECT2 | LONDON |
++-----+----------+--------+
+2 rows in set (0.00 sec)
+
+3.Get supplier numbers for suppliers who supply project j1.
+
+mysql> SELECT SID FROM SPP,PROJECTS WHERE PROJECTS.JID='J1' AND SPP.JID=PROJECTS.JID;
++-----+
+| SID |
++-----+
+| S1  |
+| S3  |
++-----+
+2 rows in set (0.00 sec)
+
+
+4.Get all shipments where the quantity is in the range 300 to 750 inclusive.
+
+mysql> SELECT DISTINCT PARTS.PID,PNAME FROM PARTS,SPP WHERE QUANTITY BETWEEN 300 AND 750 AND SPP.PID=PARTS.PID;
++-----+-------+
+| PID | PNAME |
++-----+-------+
+| P3  | PART1 |
+| P1  | PART1 |
+| P4  | PART2 |
++-----+-------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT DISTINCT JNAME,SPP.JID FROM PROJECTS,SPP WHERE QUANTITY BETWEEN 300 AND 750 AND SPP.JID=PROJECTS.JID;
++----------+-----+
+| JNAME    | JID |
++----------+-----+
+| PROJECT2 | J2  |
+| PROJECT1 | J1  |
+| PROJECT3 | J3  |
++----------+-----+
+3 rows in set (0.00 sec)
+
+mysql> SELECT DISTINCT PNAME FROM PARTS,SPP WHERE QUANTITY BETWEEN 300 AND 750;
++-------+
+| PNAME |
++-------+
+| PART1 |
+| PART2 |
++-------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT DISTINCT JNAME,SPP.JID,SPP.QUANTITY FROM PROJECTS,SPP WHERE QUANTITY BETWEEN 300 AND 750 AND SPP.JID=PROJECTS.JID;
++----------+-----+----------+
+| JNAME    | JID | QUANTITY |
++----------+-----+----------+
+| PROJECT2 | J2  |      500 |
+| PROJECT1 | J1  |      600 |
+| PROJECT2 | J2  |      300 |
+| PROJECT3 | J3  |      450 |
++----------+-----+----------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT DISTINCT JNAME,SPP.JID,SPP.QUANTITY FROM PROJECTS,SPP WHERE QUANTITY BETWEEN 300 AND 750 AND SPP.JID=PROJECTS.JID ORDER BY QUANTITY;
++----------+-----+----------+
+| JNAME    | JID | QUANTITY |
++----------+-----+----------+
+| PROJECT2 | J2  |      300 |
+| PROJECT3 | J3  |      450 |
+| PROJECT2 | J2  |      500 |
+| PROJECT1 | J1  |      600 |
++----------+-----+----------+
+4 rows in set (0.00 sec)
+
+
+mysql> SELECT * FROM SPP WHERE QUANTITY BETWEEN 300 AND 750;
++-----+-----+-----+----------+
+| SID | PID | JID | QUANTITY |
++-----+-----+-----+----------+
+| S2  | P3  | J2  |      500 |
+| S3  | P1  | J1  |      600 |
+| S4  | P3  | J2  |      300 |
+| S5  | P4  | J3  |      450 |
++-----+-----+-----+----------+
+4 rows in set (0.00 sec)
+
+5. Get all part-color/part-city pairs.
+
+mysql> SELECT CONCAT(PNAME,'-',COLOR),CONCAT(PNAME,'-',CITY) FROM PARTS;
++-------------------------+------------------------+
+| CONCAT(PNAME,'-',COLOR) | CONCAT(PNAME,'-',CITY) |
++-------------------------+------------------------+
+| PART1-PINK              | PART1-VISAKHAPATNAM    |
+| PART2-BLACK             | PART2-LONDON           |
+| PART1-WHITE             | PART1-LONDON           |
+| PART2-BLACK             | PART2-VISAKHAPATNAM    |
+| PART1-PINK              | PART1-AMARAVATHI       |
+| PART2-WHITE             | PART2-HYDERABAD        |
++-------------------------+------------------------+
+6 rows in set (0.00 sec)
+
+6.Get all supplier-number/part-number/project-number triples such that the indicated supplier,part and project are all colocated(i.e., all in the same city).
+
+mysql> SELECT SID,PID,JID,SUPPLIERS.CITY,PARTS.CITY,PROJECTS.CITY FROM SUPPLIERS,PARTS,PROJECTS WHERE (SUPPLIERS.CITY=PARTS.CITY AND PARTS.CITY=PROJECTS.CITY); +-----+-----+-----+---------------+---------------+---------------+
+| SID | PID | JID | CITY          | CITY          | CITY          |
++-----+-----+-----+---------------+---------------+---------------+
+| S1  | P2  | J1  | LONDON        | LONDON        | LONDON        |
+| S4  | P2  | J1  | LONDON        | LONDON        | LONDON        |
+| S1  | P3  | J1  | LONDON        | LONDON        | LONDON        |
+| S4  | P3  | J1  | LONDON        | LONDON        | LONDON        |
+| S1  | P2  | J2  | LONDON        | LONDON        | LONDON        |
+| S4  | P2  | J2  | LONDON        | LONDON        | LONDON        |
+| S1  | P3  | J2  | LONDON        | LONDON        | LONDON        |
+| S4  | P3  | J2  | LONDON        | LONDON        | LONDON        |
+| S6  | P5  | J3  | AMARAVATHI    | AMARAVATHI    | AMARAVATHI    |
+| S2  | P1  | J4  | VISAKHAPATNAM | VISAKHAPATNAM | VISAKHAPATNAM |
+| S5  | P1  | J4  | VISAKHAPATNAM | VISAKHAPATNAM | VISAKHAPATNAM |
+| S2  | P4  | J4  | VISAKHAPATNAM | VISAKHAPATNAM | VISAKHAPATNAM |
+| S5  | P4  | J4  | VISAKHAPATNAM | VISAKHAPATNAM | VISAKHAPATNAM |
++-----+-----+-----+---------------+---------------+---------------+
+13 rows in set (0.00 sec)
+
+7.Get all supplier-number/part-number/project-number triples such that the indicated supplier,part-number/project-number triples such that the indicated supplier,part and project are not all colocated.
+
+mysql> SELECT DISTINCT SID,PID,JID,SUPPLIERS.CITY,PARTS.CITY,PROJECTS.CITY FROM SUPPLIERS,PARTS,PROJECTS WHERE (SUPPLIERS.CITY!=PARTS.CITY AND PARTS.CITY!=PROJECTS.CITY);
++-----+-----+-----+---------------+---------------+---------------+
+| SID | PID | JID | CITY          | CITY          | CITY          |
++-----+-----+-----+---------------+---------------+---------------+
+| S1  | P1  | J1  | LONDON        | VISAKHAPATNAM | LONDON        |
+| S3  | P1  | J1  | BANGALORE     | VISAKHAPATNAM | LONDON        |
+| S4  | P1  | J1  | LONDON        | VISAKHAPATNAM | LONDON        |
+| S6  | P1  | J1  | AMARAVATHI    | VISAKHAPATNAM | LONDON        |
+| S1  | P4  | J1  | LONDON        | VISAKHAPATNAM | LONDON        |
+| S3  | P4  | J1  | BANGALORE     | VISAKHAPATNAM | LONDON        |
+| S4  | P4  | J1  | LONDON        | VISAKHAPATNAM | LONDON        |
+| S6  | P4  | J1  | AMARAVATHI    | VISAKHAPATNAM | LONDON        |
+| S1  | P5  | J1  | LONDON        | AMARAVATHI    | LONDON        |
+| S2  | P5  | J1  | VISAKHAPATNAM | AMARAVATHI    | LONDON        |
+| S3  | P5  | J1  | BANGALORE     | AMARAVATHI    | LONDON        |
+| S4  | P5  | J1  | LONDON        | AMARAVATHI    | LONDON        |
+| S5  | P5  | J1  | VISAKHAPATNAM | AMARAVATHI    | LONDON        |
+| S1  | P6  | J1  | LONDON        | HYDERABAD     | LONDON        |
+| S2  | P6  | J1  | VISAKHAPATNAM | HYDERABAD     | LONDON        |
+| S3  | P6  | J1  | BANGALORE     | HYDERABAD     | LONDON        |
+| S4  | P6  | J1  | LONDON        | HYDERABAD     | LONDON        |
+| S5  | P6  | J1  | VISAKHAPATNAM | HYDERABAD     | LONDON        |
+| S6  | P6  | J1  | AMARAVATHI    | HYDERABAD     | LONDON        |
+| S1  | P1  | J2  | LONDON        | VISAKHAPATNAM | LONDON        |
+| S3  | P1  | J2  | BANGALORE     | VISAKHAPATNAM | LONDON        |
+| S4  | P1  | J2  | LONDON        | VISAKHAPATNAM | LONDON        |
+| S6  | P1  | J2  | AMARAVATHI    | VISAKHAPATNAM | LONDON        |
+| S1  | P4  | J2  | LONDON        | VISAKHAPATNAM | LONDON        |
+| S3  | P4  | J2  | BANGALORE     | VISAKHAPATNAM | LONDON        |
+| S4  | P4  | J2  | LONDON        | VISAKHAPATNAM | LONDON        |
+| S6  | P4  | J2  | AMARAVATHI    | VISAKHAPATNAM | LONDON        |
+| S1  | P5  | J2  | LONDON        | AMARAVATHI    | LONDON        |
+| S2  | P5  | J2  | VISAKHAPATNAM | AMARAVATHI    | LONDON        |
+| S3  | P5  | J2  | BANGALORE     | AMARAVATHI    | LONDON        |
+| S4  | P5  | J2  | LONDON        | AMARAVATHI    | LONDON        |
+| S5  | P5  | J2  | VISAKHAPATNAM | AMARAVATHI    | LONDON        |
+| S1  | P6  | J2  | LONDON        | HYDERABAD     | LONDON        |
+| S2  | P6  | J2  | VISAKHAPATNAM | HYDERABAD     | LONDON        |
+| S3  | P6  | J2  | BANGALORE     | HYDERABAD     | LONDON        |
+| S4  | P6  | J2  | LONDON        | HYDERABAD     | LONDON        |
+| S5  | P6  | J2  | VISAKHAPATNAM | HYDERABAD     | LONDON        |
+| S6  | P6  | J2  | AMARAVATHI    | HYDERABAD     | LONDON        |
+| S1  | P1  | J3  | LONDON        | VISAKHAPATNAM | AMARAVATHI    |
+| S3  | P1  | J3  | BANGALORE     | VISAKHAPATNAM | AMARAVATHI    |
+| S4  | P1  | J3  | LONDON        | VISAKHAPATNAM | AMARAVATHI    |
+| S6  | P1  | J3  | AMARAVATHI    | VISAKHAPATNAM | AMARAVATHI    |
+| S2  | P2  | J3  | VISAKHAPATNAM | LONDON        | AMARAVATHI    |
+| S3  | P2  | J3  | BANGALORE     | LONDON        | AMARAVATHI    |
+| S5  | P2  | J3  | VISAKHAPATNAM | LONDON        | AMARAVATHI    |
+| S6  | P2  | J3  | AMARAVATHI    | LONDON        | AMARAVATHI    |
+| S2  | P3  | J3  | VISAKHAPATNAM | LONDON        | AMARAVATHI    |
+| S3  | P3  | J3  | BANGALORE     | LONDON        | AMARAVATHI    |
+| S5  | P3  | J3  | VISAKHAPATNAM | LONDON        | AMARAVATHI    |
+| S6  | P3  | J3  | AMARAVATHI    | LONDON        | AMARAVATHI    |
+| S1  | P4  | J3  | LONDON        | VISAKHAPATNAM | AMARAVATHI    |
+| S3  | P4  | J3  | BANGALORE     | VISAKHAPATNAM | AMARAVATHI    |
+| S4  | P4  | J3  | LONDON        | VISAKHAPATNAM | AMARAVATHI    |
+| S6  | P4  | J3  | AMARAVATHI    | VISAKHAPATNAM | AMARAVATHI    |
+| S1  | P6  | J3  | LONDON        | HYDERABAD     | AMARAVATHI    |
+| S2  | P6  | J3  | VISAKHAPATNAM | HYDERABAD     | AMARAVATHI    |
+| S3  | P6  | J3  | BANGALORE     | HYDERABAD     | AMARAVATHI    |
+| S4  | P6  | J3  | LONDON        | HYDERABAD     | AMARAVATHI    |
+| S5  | P6  | J3  | VISAKHAPATNAM | HYDERABAD     | AMARAVATHI    |
+| S6  | P6  | J3  | AMARAVATHI    | HYDERABAD     | AMARAVATHI    |
+| S2  | P2  | J4  | VISAKHAPATNAM | LONDON        | VISAKHAPATNAM |
+| S3  | P2  | J4  | BANGALORE     | LONDON        | VISAKHAPATNAM |
+| S5  | P2  | J4  | VISAKHAPATNAM | LONDON        | VISAKHAPATNAM |
+| S6  | P2  | J4  | AMARAVATHI    | LONDON        | VISAKHAPATNAM |
+| S2  | P3  | J4  | VISAKHAPATNAM | LONDON        | VISAKHAPATNAM |
+| S3  | P3  | J4  | BANGALORE     | LONDON        | VISAKHAPATNAM |
+| S5  | P3  | J4  | VISAKHAPATNAM | LONDON        | VISAKHAPATNAM |
+| S6  | P3  | J4  | AMARAVATHI    | LONDON        | VISAKHAPATNAM |
+| S1  | P5  | J4  | LONDON        | AMARAVATHI    | VISAKHAPATNAM |
+| S2  | P5  | J4  | VISAKHAPATNAM | AMARAVATHI    | VISAKHAPATNAM |
+| S3  | P5  | J4  | BANGALORE     | AMARAVATHI    | VISAKHAPATNAM |
+| S4  | P5  | J4  | LONDON        | AMARAVATHI    | VISAKHAPATNAM |
+| S5  | P5  | J4  | VISAKHAPATNAM | AMARAVATHI    | VISAKHAPATNAM |
+| S1  | P6  | J4  | LONDON        | HYDERABAD     | VISAKHAPATNAM |
+| S2  | P6  | J4  | VISAKHAPATNAM | HYDERABAD     | VISAKHAPATNAM |
+| S3  | P6  | J4  | BANGALORE     | HYDERABAD     | VISAKHAPATNAM |
+| S4  | P6  | J4  | LONDON        | HYDERABAD     | VISAKHAPATNAM |
+| S5  | P6  | J4  | VISAKHAPATNAM | HYDERABAD     | VISAKHAPATNAM |
+| S6  | P6  | J4  | AMARAVATHI    | HYDERABAD     | VISAKHAPATNAM |
+| S1  | P1  | J5  | LONDON        | VISAKHAPATNAM | HYDERABAD     |
+| S3  | P1  | J5  | BANGALORE     | VISAKHAPATNAM | HYDERABAD     |
+| S4  | P1  | J5  | LONDON        | VISAKHAPATNAM | HYDERABAD     |
+| S6  | P1  | J5  | AMARAVATHI    | VISAKHAPATNAM | HYDERABAD     |
+| S2  | P2  | J5  | VISAKHAPATNAM | LONDON        | HYDERABAD     |
+| S3  | P2  | J5  | BANGALORE     | LONDON        | HYDERABAD     |
+| S5  | P2  | J5  | VISAKHAPATNAM | LONDON        | HYDERABAD     |
+| S6  | P2  | J5  | AMARAVATHI    | LONDON        | HYDERABAD     |
+| S2  | P3  | J5  | VISAKHAPATNAM | LONDON        | HYDERABAD     |
+| S3  | P3  | J5  | BANGALORE     | LONDON        | HYDERABAD     |
+| S5  | P3  | J5  | VISAKHAPATNAM | LONDON        | HYDERABAD     |
+| S6  | P3  | J5  | AMARAVATHI    | LONDON        | HYDERABAD     |
+| S1  | P4  | J5  | LONDON        | VISAKHAPATNAM | HYDERABAD     |
+| S3  | P4  | J5  | BANGALORE     | VISAKHAPATNAM | HYDERABAD     |
+| S4  | P4  | J5  | LONDON        | VISAKHAPATNAM | HYDERABAD     |
+| S6  | P4  | J5  | AMARAVATHI    | VISAKHAPATNAM | HYDERABAD     |
+| S1  | P5  | J5  | LONDON        | AMARAVATHI    | HYDERABAD     |
+| S2  | P5  | J5  | VISAKHAPATNAM | AMARAVATHI    | HYDERABAD     |
+| S3  | P5  | J5  | BANGALORE     | AMARAVATHI    | HYDERABAD     |
+| S4  | P5  | J5  | LONDON        | AMARAVATHI    | HYDERABAD     |
+| S5  | P5  | J5  | VISAKHAPATNAM | AMARAVATHI    | HYDERABAD     |
+| S1  | P1  | J6  | LONDON        | VISAKHAPATNAM | BANGALORE     |
+| S3  | P1  | J6  | BANGALORE     | VISAKHAPATNAM | BANGALORE     |
+| S4  | P1  | J6  | LONDON        | VISAKHAPATNAM | BANGALORE     |
+| S6  | P1  | J6  | AMARAVATHI    | VISAKHAPATNAM | BANGALORE     |
+| S2  | P2  | J6  | VISAKHAPATNAM | LONDON        | BANGALORE     |
+| S3  | P2  | J6  | BANGALORE     | LONDON        | BANGALORE     |
+| S5  | P2  | J6  | VISAKHAPATNAM | LONDON        | BANGALORE     |
+| S6  | P2  | J6  | AMARAVATHI    | LONDON        | BANGALORE     |
+| S2  | P3  | J6  | VISAKHAPATNAM | LONDON        | BANGALORE     |
+| S3  | P3  | J6  | BANGALORE     | LONDON        | BANGALORE     |
+| S5  | P3  | J6  | VISAKHAPATNAM | LONDON        | BANGALORE     |
+| S6  | P3  | J6  | AMARAVATHI    | LONDON        | BANGALORE     |
+| S1  | P4  | J6  | LONDON        | VISAKHAPATNAM | BANGALORE     |
+| S3  | P4  | J6  | BANGALORE     | VISAKHAPATNAM | BANGALORE     |
+| S4  | P4  | J6  | LONDON        | VISAKHAPATNAM | BANGALORE     |
+| S6  | P4  | J6  | AMARAVATHI    | VISAKHAPATNAM | BANGALORE     |
+| S1  | P5  | J6  | LONDON        | AMARAVATHI    | BANGALORE     |
+| S2  | P5  | J6  | VISAKHAPATNAM | AMARAVATHI    | BANGALORE     |
+| S3  | P5  | J6  | BANGALORE     | AMARAVATHI    | BANGALORE     |
+| S4  | P5  | J6  | LONDON        | AMARAVATHI    | BANGALORE     |
+| S5  | P5  | J6  | VISAKHAPATNAM | AMARAVATHI    | BANGALORE     |
+| S1  | P6  | J6  | LONDON        | HYDERABAD     | BANGALORE     |
+| S2  | P6  | J6  | VISAKHAPATNAM | HYDERABAD     | BANGALORE     |
+| S3  | P6  | J6  | BANGALORE     | HYDERABAD     | BANGALORE     |
+| S4  | P6  | J6  | LONDON        | HYDERABAD     | BANGALORE     |
+| S5  | P6  | J6  | VISAKHAPATNAM | HYDERABAD     | BANGALORE     |
+| S6  | P6  | J6  | AMARAVATHI    | HYDERABAD     | BANGALORE     |
++-----+-----+-----+---------------+---------------+---------------+
+127 rows in set (0.00 sec)
+
+8.Get all supplier-number/part-number/project-number triples such that no two of the indicated supplier,part and project are colocated.
+
+mysql> SELECT SID,PID,JID,SUPPLIERS.CITY,PARTS.CITY,PROJECTS.CITY FROM SUPPLIERS,PARTS,PROJECTS WHERE(SUPPLIERS.CITY!=PARTS.CITY AND PARTS.CITY!=PROJECTS.CITY AND SUPPLIERS.CITY!=PROJECTS.CITY);
++-----+-----+-----+---------------+---------------+---------------+
+| SID | PID | JID | CITY          | CITY          | CITY          |
++-----+-----+-----+---------------+---------------+---------------+
+| S3  | P1  | J1  | BANGALORE     | VISAKHAPATNAM | LONDON        |
+| S6  | P1  | J1  | AMARAVATHI    | VISAKHAPATNAM | LONDON        |
+| S3  | P4  | J1  | BANGALORE     | VISAKHAPATNAM | LONDON        |
+| S6  | P4  | J1  | AMARAVATHI    | VISAKHAPATNAM | LONDON        |
+| S2  | P5  | J1  | VISAKHAPATNAM | AMARAVATHI    | LONDON        |
+| S3  | P5  | J1  | BANGALORE     | AMARAVATHI    | LONDON        |
+| S5  | P5  | J1  | VISAKHAPATNAM | AMARAVATHI    | LONDON        |
+| S2  | P6  | J1  | VISAKHAPATNAM | HYDERABAD     | LONDON        |
+| S3  | P6  | J1  | BANGALORE     | HYDERABAD     | LONDON        |
+| S5  | P6  | J1  | VISAKHAPATNAM | HYDERABAD     | LONDON        |
+| S6  | P6  | J1  | AMARAVATHI    | HYDERABAD     | LONDON        |
+| S3  | P1  | J2  | BANGALORE     | VISAKHAPATNAM | LONDON        |
+| S6  | P1  | J2  | AMARAVATHI    | VISAKHAPATNAM | LONDON        |
+| S3  | P4  | J2  | BANGALORE     | VISAKHAPATNAM | LONDON        |
+| S6  | P4  | J2  | AMARAVATHI    | VISAKHAPATNAM | LONDON        |
+| S2  | P5  | J2  | VISAKHAPATNAM | AMARAVATHI    | LONDON        |
+| S3  | P5  | J2  | BANGALORE     | AMARAVATHI    | LONDON        |
+| S5  | P5  | J2  | VISAKHAPATNAM | AMARAVATHI    | LONDON        |
+| S2  | P6  | J2  | VISAKHAPATNAM | HYDERABAD     | LONDON        |
+| S3  | P6  | J2  | BANGALORE     | HYDERABAD     | LONDON        |
+| S5  | P6  | J2  | VISAKHAPATNAM | HYDERABAD     | LONDON        |
+| S6  | P6  | J2  | AMARAVATHI    | HYDERABAD     | LONDON        |
+| S1  | P1  | J3  | LONDON        | VISAKHAPATNAM | AMARAVATHI    |
+| S3  | P1  | J3  | BANGALORE     | VISAKHAPATNAM | AMARAVATHI    |
+| S4  | P1  | J3  | LONDON        | VISAKHAPATNAM | AMARAVATHI    |
+| S2  | P2  | J3  | VISAKHAPATNAM | LONDON        | AMARAVATHI    |
+| S3  | P2  | J3  | BANGALORE     | LONDON        | AMARAVATHI    |
+| S5  | P2  | J3  | VISAKHAPATNAM | LONDON        | AMARAVATHI    |
+| S2  | P3  | J3  | VISAKHAPATNAM | LONDON        | AMARAVATHI    |
+| S3  | P3  | J3  | BANGALORE     | LONDON        | AMARAVATHI    |
+| S5  | P3  | J3  | VISAKHAPATNAM | LONDON        | AMARAVATHI    |
+| S1  | P4  | J3  | LONDON        | VISAKHAPATNAM | AMARAVATHI    |
+| S3  | P4  | J3  | BANGALORE     | VISAKHAPATNAM | AMARAVATHI    |
+| S4  | P4  | J3  | LONDON        | VISAKHAPATNAM | AMARAVATHI    |
+| S1  | P6  | J3  | LONDON        | HYDERABAD     | AMARAVATHI    |
+| S2  | P6  | J3  | VISAKHAPATNAM | HYDERABAD     | AMARAVATHI    |
+| S3  | P6  | J3  | BANGALORE     | HYDERABAD     | AMARAVATHI    |
+| S4  | P6  | J3  | LONDON        | HYDERABAD     | AMARAVATHI    |
+| S5  | P6  | J3  | VISAKHAPATNAM | HYDERABAD     | AMARAVATHI    |
+| S3  | P2  | J4  | BANGALORE     | LONDON        | VISAKHAPATNAM |
+| S6  | P2  | J4  | AMARAVATHI    | LONDON        | VISAKHAPATNAM |
+| S3  | P3  | J4  | BANGALORE     | LONDON        | VISAKHAPATNAM |
+| S6  | P3  | J4  | AMARAVATHI    | LONDON        | VISAKHAPATNAM |
+| S1  | P5  | J4  | LONDON        | AMARAVATHI    | VISAKHAPATNAM |
+| S3  | P5  | J4  | BANGALORE     | AMARAVATHI    | VISAKHAPATNAM |
+| S4  | P5  | J4  | LONDON        | AMARAVATHI    | VISAKHAPATNAM |
+| S1  | P6  | J4  | LONDON        | HYDERABAD     | VISAKHAPATNAM |
+| S3  | P6  | J4  | BANGALORE     | HYDERABAD     | VISAKHAPATNAM |
+| S4  | P6  | J4  | LONDON        | HYDERABAD     | VISAKHAPATNAM |
+| S6  | P6  | J4  | AMARAVATHI    | HYDERABAD     | VISAKHAPATNAM |
+| S1  | P1  | J5  | LONDON        | VISAKHAPATNAM | HYDERABAD     |
+| S3  | P1  | J5  | BANGALORE     | VISAKHAPATNAM | HYDERABAD     |
+| S4  | P1  | J5  | LONDON        | VISAKHAPATNAM | HYDERABAD     |
+| S6  | P1  | J5  | AMARAVATHI    | VISAKHAPATNAM | HYDERABAD     |
+| S2  | P2  | J5  | VISAKHAPATNAM | LONDON        | HYDERABAD     |
+| S3  | P2  | J5  | BANGALORE     | LONDON        | HYDERABAD     |
+| S5  | P2  | J5  | VISAKHAPATNAM | LONDON        | HYDERABAD     |
+| S6  | P2  | J5  | AMARAVATHI    | LONDON        | HYDERABAD     |
+| S2  | P3  | J5  | VISAKHAPATNAM | LONDON        | HYDERABAD     |
+| S3  | P3  | J5  | BANGALORE     | LONDON        | HYDERABAD     |
+| S5  | P3  | J5  | VISAKHAPATNAM | LONDON        | HYDERABAD     |
+| S6  | P3  | J5  | AMARAVATHI    | LONDON        | HYDERABAD     |
+| S1  | P4  | J5  | LONDON        | VISAKHAPATNAM | HYDERABAD     |
+| S3  | P4  | J5  | BANGALORE     | VISAKHAPATNAM | HYDERABAD     |
+| S4  | P4  | J5  | LONDON        | VISAKHAPATNAM | HYDERABAD     |
+| S6  | P4  | J5  | AMARAVATHI    | VISAKHAPATNAM | HYDERABAD     |
+| S1  | P5  | J5  | LONDON        | AMARAVATHI    | HYDERABAD     |
+| S2  | P5  | J5  | VISAKHAPATNAM | AMARAVATHI    | HYDERABAD     |
+| S3  | P5  | J5  | BANGALORE     | AMARAVATHI    | HYDERABAD     |
+| S4  | P5  | J5  | LONDON        | AMARAVATHI    | HYDERABAD     |
+| S5  | P5  | J5  | VISAKHAPATNAM | AMARAVATHI    | HYDERABAD     |
+| S1  | P1  | J6  | LONDON        | VISAKHAPATNAM | BANGALORE     |
+| S4  | P1  | J6  | LONDON        | VISAKHAPATNAM | BANGALORE     |
+| S6  | P1  | J6  | AMARAVATHI    | VISAKHAPATNAM | BANGALORE     |
+| S2  | P2  | J6  | VISAKHAPATNAM | LONDON        | BANGALORE     |
+| S5  | P2  | J6  | VISAKHAPATNAM | LONDON        | BANGALORE     |
+| S6  | P2  | J6  | AMARAVATHI    | LONDON        | BANGALORE     |
+| S2  | P3  | J6  | VISAKHAPATNAM | LONDON        | BANGALORE     |
+| S5  | P3  | J6  | VISAKHAPATNAM | LONDON        | BANGALORE     |
+| S6  | P3  | J6  | AMARAVATHI    | LONDON        | BANGALORE     |
+| S1  | P4  | J6  | LONDON        | VISAKHAPATNAM | BANGALORE     |
+| S4  | P4  | J6  | LONDON        | VISAKHAPATNAM | BANGALORE     |
+| S6  | P4  | J6  | AMARAVATHI    | VISAKHAPATNAM | BANGALORE     |
+| S1  | P5  | J6  | LONDON        | AMARAVATHI    | BANGALORE     |
+| S2  | P5  | J6  | VISAKHAPATNAM | AMARAVATHI    | BANGALORE     |
+| S4  | P5  | J6  | LONDON        | AMARAVATHI    | BANGALORE     |
+| S5  | P5  | J6  | VISAKHAPATNAM | AMARAVATHI    | BANGALORE     |
+| S1  | P6  | J6  | LONDON        | HYDERABAD     | BANGALORE     |
+| S2  | P6  | J6  | VISAKHAPATNAM | HYDERABAD     | BANGALORE     |
+| S4  | P6  | J6  | LONDON        | HYDERABAD     | BANGALORE     |
+| S5  | P6  | J6  | VISAKHAPATNAM | HYDERABAD     | BANGALORE     |
+| S6  | P6  | J6  | AMARAVATHI    | HYDERABAD     | BANGALORE     |
++-----+-----+-----+---------------+---------------+---------------+
+92 rows in set (0.00 sec)
+
+9.Get full details for parts supplied by a supplier in london.
+
+mysql> SELECT DISTINCT PARTS.PID,PARTS.PNAME,COLOR,WEIGHT,SUPPLIERS.CITY FROM PARTS,SUPPLIERS,SPP WHERE SUPPLIERS.CITY='LONDON' AND SPP.SID=SUPPLIERS.SID AND SPP.PID=PARTS.PID;
++-----+-------+-------+--------+--------+
+| PID | PNAME | COLOR | WEIGHT | CITY   |
++-----+-------+-------+--------+--------+
+| P1  | PART1 | PINK  | 70KGS  | LONDON |
+| P3  | PART1 | WHITE | 55KGS  | LONDON |
++-----+-------+-------+--------+--------+
+2 rows in set (0.00 sec)
+
+10.Get part numbers for parts supplied by a supplier in london to a project in london.
+
+mysql> SELECT DISTINCT PARTS.PID FROM PARTS,SUPPLIERS,PROJECTS,SPP WHERE SUPPLIERS.CITY='LONDON' AND PROJECTS.CITY='LONDON' AND SPP.PID=PARTS.PID AND SPP.SID=SUPPLIERS.SID AND SPP.JID=PROJECTS.JID;
++-----+
+| PID |
++-----+
+| P1  |
+| P3  |
++-----+
+2 rows in set (0.00 sec)
+
+mysql> SELECT DISTINCT PARTS.PID,SUPPLIERS.SID,PROJECTS.JID FROM PARTS,SUPPLIERS,PROJECTS,SPP WHERE SUPPLIERS.CITY='LONDON' AND PROJECTS.CITY='LONDON' AND SPP.PID=PARTS.PID AND SPP.SID=SUPPLIERS.SID AND SPP.JID=PROJECTS.JID;
++-----+-----+-----+
+| PID | SID | JID |
++-----+-----+-----+
+| P1  | S1  | J1  |
+| P3  | S4  | J2  |
++-----+-----+-----+
+2 rows in set (0.00 sec)
+
+mysql> SELECT DISTINCT PID FROM SPP WHERE SID IN(SELECT SID FROM SUPPLIERS,PROJECTS WHERE SUPPLIERS.CITY='LONDON' AND PROJECTS.CITY='LONDON');
++-----+
+| PID |
++-----+
+| P1  |
+| P3  |
++-----+
+2 rows in set (0.00 sec)
+
+11.Get all pairs of city names such that a supplier in the first city supplies a project in the second city.
+
+mysql> SELECT SUPPLIERS.CITY,PROJECTS.CITY FROM SUPPLIERS,PROJECTS,SPP WHERE SPP.SID=SUPPLIERS.SID AND SPP.JID=PROJECTS.JID;
++---------------+------------+
+| CITY          | CITY       |
++---------------+------------+
+| LONDON        | LONDON     |
+| BANGALORE     | LONDON     |
+| VISAKHAPATNAM | LONDON     |
+| LONDON        | LONDON     |
+| VISAKHAPATNAM | AMARAVATHI |
++---------------+------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT SUPPLIERS.SID,PROJECTS.JID,SUPPLIERS.CITY,PROJECTS.CITY FROM SUPPLIERS,PROJECTS WHERE EXISTS(SELECT * FROM SPP WHERE SPP.SID=SUPPLIERS.SID AND SPP.JID=PROJECTS.JID);
++-----+-----+---------------+------------+
+| SID | JID | CITY          | CITY       |
++-----+-----+---------------+------------+
+| S1  | J1  | LONDON        | LONDON     |
+| S3  | J1  | BANGALORE     | LONDON     |
+| S2  | J2  | VISAKHAPATNAM | LONDON     |
+| S4  | J2  | LONDON        | LONDON     |
+| S5  | J3  | VISAKHAPATNAM | AMARAVATHI |
++-----+-----+---------------+------------+
+5 rows in set (0.00 sec)
+
+12.Get part numbers for parts supplied to any project by a supplier in the same city as that project.
+
+mysql> SELECT DISTINCT SPP.PID,SUPPLIERS.CITY,PROJECTS.CITY FROM SUPPLIERS,PROJECTS,SPP WHERE SUPPLIERS.CITY=PROJECTS.CITY AND SPP.SID=SUPPLIERS.SID AND SPP.JID=PROJECTS.JID;
++-----+--------+--------+
+| PID | CITY   | CITY   |
++-----+--------+--------+
+| P1  | LONDON | LONDON |
+| P3  | LONDON | LONDON |
++-----+--------+--------+
+2 rows in set (0.01 sec)
+
+13.Get project numbers for projects supplied by at least one supplier not in the same city.
+
+mysql> SELECT DISTINCT SPP.JID,SUPPLIERS.CITY AS SUP_CITY,PROJECTS.CITY AS PRO_CITY FROM SUPPLIERS,PROJECTS,SPP WHERE SUPPLIERS.CITY!=PROJECTS.CITY AND SPP.SID=SUPPLIERS.SID AND SPP.JID=PROJECTS.JID;
++-----+---------------+------------+
+| JID | SUP_CITY      | PRO_CITY   |
++-----+---------------+------------+
+| J1  | BANGALORE     | LONDON     |
+| J2  | VISAKHAPATNAM | LONDON     |
+| J3  | VISAKHAPATNAM | AMARAVATHI |
++-----+---------------+------------+
+3 rows in set (0.01 sec)
+
+mysql> SELECT DISTINCT PROJECTS.JID FROM SPP,SUPPLIERS,PROJECTS WHERE SPP.SID!=SUPPLIERS.SID AND SPP.JID=PROJECTS.JID AND SUPPLIERS.CITY!=PROJECTS.CITY;
++-----+
+| JID |
++-----+
+| J3  |
+| J1  |
+| J2  |
++-----+
+3 rows in set (0.00 sec)
+
+14.Get all pairs of part numbers such that some supplier supplies both the indicated parts.
+
+mysql> SELECT DISTINCT A.PID,B.PID,B.SID FROM SPP A,SPP B WHERE A.SID=B.SID;
++-----+-----+-----+
+| PID | PID | SID |
++-----+-----+-----+
+| P1  | P1  | S1  |
+| P1  | P2  | S1  |
+| P1  | P3  | S1  |
+| P1  | P1  | S3  |
+| P2  | P1  | S1  |
+| P2  | P2  | S1  |
+| P2  | P3  | S1  |
+| P3  | P1  | S1  |
+| P3  | P2  | S1  |
+| P3  | P3  | S1  |
+| P3  | P3  | S2  |
+| P3  | P6  | S2  |
+| P3  | P3  | S4  |
+| P4  | P4  | S5  |
+| P6  | P3  | S2  |
+| P6  | P6  | S2  |
++-----+-----+-----+
+16 rows in set (0.00 sec)
+
+mysql> SELECT DISTINCT A.PID,B.PID,B.SID FROM SPP A, SPP B WHERE A.SID=B.SID AND A.PID!=B.PID;
++-----+-----+-----+
+| PID | PID | SID |
++-----+-----+-----+
+| P1  | P2  | S1  |
+| P1  | P3  | S1  |
+| P2  | P1  | S1  |
+| P2  | P3  | S1  |
+| P3  | P1  | S1  |
+| P3  | P2  | S1  |
+| P3  | P6  | S2  |
+| P6  | P3  | S2  |
++-----+-----+-----+
+8 rows in set (0.00 sec)
+
+15.Get the total number of projects supplied by supplier s1.
+
+mysql> SELECT JNAME,COUNT(JNAME) AS TOTAL_PROJECTS FROM PROJECTS,SUPPLIERS,SPP WHERE SUPPLIERS.SID='S1' AND SPP.SID=SUPPLIERS.SID AND SPP.JID=PROJECTS.JID GROUP BY JNAME;
++----------+----------------+
+| JNAME    | TOTAL_PROJECTS |
++----------+----------------+
+| PROJECT1 |              1 |
++----------+----------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT COUNT(JNAME) AS TOTAL_PROJECTS FROM PROJECTS,SUPPLIERS,SPP WHERE SUPPLIERS.SID='S1' AND SPP.SID=SUPPLIERS.SID AND SPP.JID=PROJECTS.JID;
++----------------+
+| TOTAL_PROJECTS |
++----------------+
+|              1 |
++----------------+
+1 row in set (0.00 sec)
+
+16.Get the total quantity of part p1 supplied by supplier s1.
+
+mysql> SELECT QUANTITY, COUNT(QUANTITY) AS TOTAL_QUANTITY FROM SPP WHERE SPP.SID='S1' AND SPP.PID='P1' GROUP BY QUANTITY; +----------+----------------+
+| QUANTITY | TOTAL_QUANTITY |
++----------+----------------+
+|      800 |              1 |
++----------+----------------+
+1 row in set (0.00 sec)
+
+17.For each part being supplied to a project,get the part number,the project number, and the corresponding total quantity.
+
+mysql> SELECT DISTINCT SID,PID,JID,PARTS.PNAME,QUANTITY FROM PARTS NATURAL JOIN SPP;
++-----+-----+-----+-------+----------+
+| SID | PID | JID | PNAME | QUANTITY |
++-----+-----+-----+-------+----------+
+| S1  | P1  | J1  | PART1 |      800 |
+| S2  | P3  | J2  | PART1 |      500 |
+| S3  | P1  | J1  | PART1 |      600 |
+| S4  | P3  | J2  | PART1 |      300 |
+| S5  | P4  | J3  | PART2 |      450 |
++-----+-----+-----+-------+----------+
+5 rows in set (0.00 sec)
+
+18. Get part numbers of parts supplied to some project in an average quantity of more than 350.
+
+mysql> SELECT PID FROM SPP WHERE QUANTITY>350;
++-----+
+| PID |
++-----+
+| P1  |
+| P3  |
+| P1  |
+| P4  |
++-----+
+4 rows in set (0.00 sec)
+
+mysql> SELECT PID FROM PARTS WHERE EXISTS(SELECT * FROM PROJECTS WHERE 320<(SELECT AVG(QUANTITY) FROM SPP WHERE SPP.JID=PROJECTS.JID AND SPP.PID=PARTS.PID));
++-----+
+| PID |
++-----+
+| P1  |
+| P3  |
+| P4  |
++-----+
+3 rows in set (0.00 sec)
+
+
+mysql> SELECT PID,JNAME FROM SPP,PROJECTS WHERE QUANTITY>350 AND SPP.JID=PROJECTS.JID;
++-----+----------+
+| PID | JNAME    |
++-----+----------+
+| P1  | PROJECT1 |
+| P3  | PROJECT2 |
+| P1  | PROJECT1 |
+| P4  | PROJECT3 |
++-----+----------+
+4 rows in set (0.00 sec)
+
+19.Get project names for projects supplied by supplier s1.
+
+mysql> SELECT JNAME,SPP.SID FROM PROJECTS,SPP WHERE SPP.SID='S1' AND SPP.JID=PROJECTS.JID;
++----------+-----+
+| JNAME    | SID |
++----------+-----+
+| PROJECT1 | S1  |
++----------+-----+
+1 row in set (0.00 sec)
+
+
+mysql> SELECT JNAME,SUPPLIERS.SID FROM PROJECTS,SUPPLIERS,SPP WHERE SUPPLIERS.SID='S1' AND SPP.SID=SUPPLIERS.SID AND SPP.JID=PROJECTS.JID;
++----------+-----+
+| JNAME    | SID |
++----------+-----+
+| PROJECT1 | S1  |
++----------+-----+
+1 row in set (0.01 sec)
+
+20.Get colors of parts supplied by supplier s1.
+
+mysql> SELECT COLOR FROM PARTS,SPP WHERE SPP.SID='S1' AND SPP.PID=PARTS.PID;
++-------+
+| COLOR |
++-------+
+| PINK  |
++-------+
+1 row in set (0.00 sec)
+
+21. Get part numbers for parts supplied to any project in london.
+
+mysql> SELECT DISTINCT PID FROM SPP WHERE JID IN(SELECT JID FROM PROJECTS WHERE PROJECTS.CITY='LONDON');
++-----+
+| PID |
++-----+
+| P1  |
+| P3  |
++-----+
+2 rows in set (0.00 sec)
+
+mysql> SELECT PARTS.PID FROM PARTS,SUPPLIERS,SPP WHERE SUPPLIERS.CITY='LONDON' AND SPP.PID=PARTS.PID AND SPP.SID=SUPPLIERS.SID;
++-----+
+| PID |
++-----+
+| P1  |
+| P3  |
++-----+
+2 rows in set (0.01 sec)
+
+mysql> SELECT DISTINCT PARTS.PID FROM PARTS,PROJECTS,SPP WHERE PROJECTS.CITY='LONDON' AND SPP.PID=PARTS.PID AND SPP.JID=PROJECTS.JID;
++-----+
+| PID |
++-----+
+| P1  |
+| P3  |
++-----+
+2 rows in set (0.00 sec)
+
+
+22. Get project numbers for projects using at least one part available from supplier s1.
+
+mysql> SELECT JID FROM SPP WHERE SID IN(SELECT SUPPLIERS.SID FROM SUPPLIERS WHERE SUPPLIERS.SID='S1');
++-----+
+| JID |
++-----+
+| J1  |
++-----+
+1 row in set (0.00 sec)
+
+mysql> SELECT JID FROM SPP WHERE SPP.SID='S1';
++-----+
+| JID |
++-----+
+| J1  |
++-----+
+1 row in set (0.00 sec)
+
+23.Get supplier numbers for suppliers supplying at least one part supplied by at least one supplier who supplies at least one red part.
+
+
+mysql> SELECT SPP.SID,SPP.PID FROM SUPPLIERS,PARTS,SPP WHERE PARTS.COLOR='RED' AND SPP.PID=PARTS.PID and SPP.SID=SUPPLIERS.SID;
++-----+-----+
+| SID | PID |
++-----+-----+
+| S1  | P1  |
+| S3  | P1  |
++-----+-----+
+2 rows in set (0.01 sec)
+
+mysql> SELECT SID FROM SPP WHERE PID IN(SELECT PID FROM PARTS WHERE PARTS.COLOR='RED');
++-----+
+| SID |
++-----+
+| S1  |
+| S3  |
++-----+
+2 rows in set (0.01 sec)
+
+24. Get supplier numbers for suppliers with a status lower than that of supplier s1.
+
+mysql> SELECT SID FROM SUPPLIERS WHERE STATUS<(SELECT STATUS FROM SUPPLIERS WHERE SUPPLIERS.SID='S1');
++-----+
+| SID |
++-----+
+| S4  |
++-----+
+1 row in set (0.00 sec)
+
+mysql> SELECT SID FROM SUPPLIERS WHERE STATUS>(SELECT STATUS FROM SUPPLIERS WHERE SUPPLIERS.SID='S1');
++-----+
+| SID |
++-----+
+| S2  |
+| S3  |
+| S5  |
+| S6  |
++-----+
+4 rows in set (0.00 sec)
+
+25.Get project numbers for projects whose city is first in the alphabetic lists of such cities.
+
+mysql> SELECT JID,PROJECTS.CITY FROM PROJECTS ORDER BY CITY LIMIT 1;
++-----+------------+
+| JID | CITY       |
++-----+------------+
+| J3  | AMARAVATHI |
++-----+------------+
+1 row in set (0.00 sec)
+
+26.Get project number for projects supplied with part p1 in an average quantity greater than the greatest quantity in which any part is supplied to project j1.
+
+mysql> SELECT JID FROM PROJECTS WHERE (SELECT AVG(QUANTITY) FROM SPP WHERE SPP.JID=PROJECTS.JID AND SPP.PID='P1' > (SELECT MAX(QUANTITY) FROM SPP WHERE PROJECTS.JID='J1'));
+
+Empty set (0.00 sec)
+
+27.Get supplier numbers for suppliers supplying some project with part p1 in a quantity greater than the average shipment quantity of part p1 for that project.
+mysql> SELECT SID FROM SPP WHERE(SELECT QUANTITY FROM SPP WHERE SPP.PID='P1'>(SELECT AVG(QUANTITY) FROM SPP WHERE SPP.PID='P1'));
+
+Empty set(0.00 sec)
+
+28.Get project numbers for projects not supplied with any red part by any london supplier.
+
+mysql> SELECT  JID FROM SPP,PARTS,SUPPLIERS WHERE PARTS.COLOR!='RED' AND SUPPLIERS.CITY!='LONDON' AND SPP.PID=PARTS.PID AND SPP.SID=SUPPLIERS.SID;
++-----+
+| JID |
++-----+
+| J2  |
+| J3  |
+| J4  |
+| J3  |
++-----+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM SPP;
++-----+-----+-----+----------+
+| SID | PID | JID | QUANTITY |
++-----+-----+-----+----------+
+| S1  | P1  | J1  |      800 |
+| S1  | P2  | J4  |      250 |
+| S1  | P3  | J5  |      250 |
+| S2  | P3  | J2  |      500 |
+| S2  | P6  | J3  |      670 |
+| S3  | P1  | J1  |      600 |
+| S4  | P3  | J2  |      300 |
+| S5  | P4  | J3  |      450 |
+| S5  | P4  | J4  |      780 |
++-----+-----+-----+----------+
+9 rows in set (0.00 sec)
+
+mysql> SELECT  JID,SUPPLIERS.CITY FROM SPP,PARTS,SUPPLIERS WHERE PARTS.COLOR!='RED' AND SUPPLIERS.CITY!='LONDON ' AND SPP.SID=SUPPLIERS.SID AND SPP.PID=PARTS.PID;                                                                
++-----+---------------+
+| JID | CITY          |
++-----+---------------+
+| J2  | VISAKHAPATNAM |
+| J3  | VISAKHAPATNAM |
+| J4  | VISAKHAPATNAM |
+| J3  | VISAKHAPATNAM |
++-----+---------------+
+4 rows in set (0.00 sec)
+
+
+mysql> SELECT  JID FROM SPP,PARTS WHERE PARTS.COLOR!='RED' AND PARTS.CITY!='LONDON' AND SPP.PID=PARTS.PID;
++-----+
+| JID |
++-----+
+| J3  |
++-----+
+1 row in set (0.00 sec)
+
+mysql> SELECT  JID,PARTS.COLOR,PARTS.CITY FROM SPP,PARTS WHERE PARTS.COLOR!='RED' AND PARTS.CITY!='LONDON' AND SPP.PID=PARTS.PID; 
++-----+-------+---------------+
+| JID | COLOR | CITY          |
++-----+-------+---------------+
+| J3  | BLACK | VISAKHAPATNAM |
++-----+-------+---------------+
+1 row in set (0.00 sec)
+
+
+
+29.Get project numbers for projects supplied entirely by supplier s1.
+
+mysql> SELECT * FROM SPP;
++-----+-----+-----+----------+
+| SID | PID | JID | QUANTITY |
++-----+-----+-----+----------+
+| S1  | P1  | J1  |      100 |
+| S1  | P1  | J2  |      120 |
+| S1  | P1  | J3  |      170 |
+| S1  | P1  | J4  |      500 |
+| S1  | P1  | J5  |      400 |
+| S1  | P1  | J6  |      270 |
+| S1  | P2  | J4  |      250 |
+| S2  | P1  | J1  |      150 |
+| S2  | P2  | J1  |      240 |
+| S2  | P2  | J2  |      280 |
+| S2  | P2  | J3  |      380 |
+| S2  | P2  | J4  |      350 |
+| S2  | P6  | J3  |      670 |
+| S3  | P1  | J1  |      150 |
+| S4  | P3  | J2  |      300 |
+| S5  | P1  | J1  |      100 |
+| S5  | P4  | J3  |      450 |
+| S5  | P4  | J4  |      780 |
+| S6  | P1  | J1  |      100 |
++-----+-----+-----+----------+
+19 rows in set (0.00 sec)
+
+mysql> SELECT JID,SID FROM SPP WHERE SID='S1' AND JID IN (SELECT JID FROM SPP GROUP BY JID HAVING COUNT(SID)=1);
++-----+-----+
+| JID | SID |
++-----+-----+
+| J5  | S1  |
+| J6  | S1  |
++-----+-----+
+2 rows in set (0.00 sec)
+
+mysql> SELECT PROJECTS.JID FROM PROJECTS,SPP WHERE EXISTS(SELECT * FROM SUPPLIERS WHERE SUPPLIERS.SID='S1' AND SPP.SID=SUPPLIERS.SID AND SPP.JID=PROJECTS.JID);
++-----+
+| JID |
++-----+
+| J1  |
+| J4  |
+| J5  |
++-----+
+3 rows in set (0.00 sec)
+
+mysql> SELECT JID FROM SPP WHERE SPP.SID='S1';
++-----+
+| JID |
++-----+
+| J1  |
+| J4  |
+| J5  |
++-----+
+3 rows in set (0.00 sec)
+
+
+30. Get part numbers for parts supplied to all projects in london.
+
+mysql> SELECT PARTS.PID FROM PARTS,SPP WHERE EXISTS(SELECT * FROM PROJECTS WHERE PROJECTS.CITY='LONDON' AND SPP.PID=PARTS.PID AND SPP.JID=PROJECTS.JID);
++-----+
+| PID |
++-----+
+| P1  |
+| P1  |
+| P3  |
+| P3  |
++-----+
+4 rows in set (0.00 sec)
+
+mysql> SELECT PARTS.PID,SPP.JID FROM PARTS,SPP WHERE EXISTS(SELECT * FROM PROJECTS WHERE PROJECTS.CITY='LONDON' AND SPP.PID=PARTS.PID AND SPP.JID=PROJECTS.JID); 
++-----+-----+
+| PID | JID |
++-----+-----+
+| P1  | J1  |
+| P1  | J1  |
+| P3  | J2  |
+| P3  | J2  |
++-----+-----+
+4 rows in set (0.00 sec)
+
+31.Get supplier numbers for suppliers who supply the same parts to all projects.
+mysql> SELECT SID FROM SUPPLIERS WHERE EXISTS(SELECT * FROM PARTS WHERE NOT EXISTS(SELECT * FROM PROJECTS WHERE NOT EXISTS(SELECT * FROM SPP WHERE SPP.SID=SUPPLIERS.SID AND SPP.PID=PARTS.PID AND SPP.JID=PROJECTS.JID)));
++-----+
+| SID |
++-----+
+| S1  |
+| S2  |
++-----+
+2 rows in set (0.00 sec)
+
+mysql> SELECT DISTINCT SUPPLIERS.SID,SPP.JID FROM SUPPLIERS,SPP WHERE EXISTS(SELECT * FROM PARTS WHERE NOT EXISTS(SELECT * FROM PROJECTS WHERE NOT EXISTS(SELECT * FROM SPP WHERE SPP.SID=SUPPLIERS.SID AND SPP.PID=PARTS.PID AND SPP.JID=PROJECTS.JID)))ORDER BY SID,JID;
++-----+-----+
+| SID | JID |
++-----+-----+
+| S1  | J1  |
+| S1  | J2  |
+| S1  | J3  |
+| S1  | J4  |
+| S1  | J5  |
+| S1  | J6  |
+| S2  | J1  |
+| S2  | J2  |
+| S2  | J3  |
+| S2  | J4  |
+| S2  | J5  |
+| S2  | J6  |
++-----+-----+
+12 rows in set (0.00 sec)
+
+
+
+32.Get project numbers for projects supplied with at least all parts available from supplier s1.
+
+mysql> SELECT JID FROM PROJECTS,PARTS WHERE EXISTS(SELECT * FROM SPP WHERE SPP.JID=PROJECTS.JID AND SPP.PID=PARTS.PID AND SPP.SID='S1');
++-----+
+| JID |
++-----+
+| J1  |
+| J4  |
+| J5  |
++-----+
+3 rows in set (0.00 sec)
+
+
+33.Get all cities in which at least one supplier,part or project is located.
+
+mysql> SELECT SUPPLIERS.CITY FROM SUPPLIERS UNION SELECT PARTS.CITY FROM PARTS UNION SELECT PROJECTS.CITY FROM PROJECTS;
++---------------+
+| CITY          |
++---------------+
+| LONDON        |
+| VISAKHAPATNAM |
+| BANGALORE     |
+| AMARAVATHI    |
+| HYDERABAD     |
++---------------+
+5 rows in set (0.00 sec)
+
+
+mysql> SELECT SUPPLIERS.CITY,PARTS.CITY,PROJECTS.CITY FROM SUPPLIERS,PARTS,PROJECTS WHERE EXISTS(SELECT * FROM SPP WHERE SPP.PID=PARTS.PID AND SPP.SID=SUPPLIERS.SID AND SPP.JID=PROJECTS.JID AND SUPPLIERS.CITY=PARTS.CITY AND PARTS.CITY=PROJECTS.CITY);
++--------+--------+--------+
+| CITY   | CITY   | CITY   |
++--------+--------+--------+
+| LONDON | LONDON | LONDON |
++--------+--------+--------+
+1 row in set (0.01 sec)
+
+mysql> SELECT SID,PID,JID,SUPPLIERS.CITY,PARTS.CITY,PROJECTS.CITY FROM SUPPLIERS,PARTS,PROJECTS WHERE EXISTS(SELECT * FROM SPP WHERE SPP.PID=PARTS.PID AND SPP.SID=SUPPLIERS.SID AND SPP.JID=PROJECTS.JID AND SUPPLIERS.CITY=PARTS.CITY AND PARTS.CITY=PROJECTS.CITY);                                                                     
++-----+-----+-----+--------+--------+--------+
+| SID | PID | JID | CITY   | CITY   | CITY   |
++-----+-----+-----+--------+--------+--------+
+| S4  | P3  | J2  | LONDON | LONDON | LONDON |
++-----+-----+-----+--------+--------+--------+
+
+mysql> INSERT INTO SPP VALUES('S5','P4','J4',780);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> COMMIT;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> SELECT * FROM SPP;
++-----+-----+-----+----------+
+| SID | PID | JID | QUANTITY |
++-----+-----+-----+----------+
+| S1  | P1  | J1  |      800 |
+| S1  | P2  | J3  |      250 |
+| S1  | P3  | J3  |      250 |
+| S2  | P3  | J2  |      500 |
+| S2  | P6  | J3  |      670 |
+| S3  | P1  | J1  |      600 |
+| S4  | P3  | J2  |      300 |
+| S5  | P4  | J3  |      450 |
+| S5  | P4  | J4  |      780 |
++-----+-----+-----+----------+
+9 rows in set (0.00 sec)
+
+mysql> SELECT SID,PID,JID,SUPPLIERS.CITY,PARTS.CITY,PROJECTS.CITY FROM SUPPLIERS,PARTS,PROJECTS WHERE EXISTS(SELECT * FROM SPP WHERE SPP.PID=PARTS.PID AND SPP.SID=SUPPLIERS.SID AND SPP.JID=PROJECTS.JID AND SUPPLIERS.CITY=PARTS.CITY AND PARTS.CITY=PROJECTS.CITY);
++-----+-----+-----+---------------+---------------+---------------+
+| SID | PID | JID | CITY          | CITY          | CITY          |
++-----+-----+-----+---------------+---------------+---------------+
+| S4  | P3  | J2  | LONDON        | LONDON        | LONDON        |
+| S5  | P4  | J4  | VISAKHAPATNAM | VISAKHAPATNAM | VISAKHAPATNAM |
++-----+-----+-----+---------------+---------------+---------------+
+2 rows in set (0.01 sec)
+
+34.Get part numbers for parts that are supplied either by a london supplier or to a london project.
+
+mysql> SELECT SPP.PID FROM SPP,SUPPLIERS WHERE SUPPLIERS.CITY='LONDON' AND SPP.SID=SUPPLIERS.SID UNION SELECT SPP.PID FROM SPP,PROJECTS WHERE PROJECTS.CITY='LONDON' AND SPP.JID=PROJECTS.JID;
++-----+
+| PID |
++-----+
+| P1  |
+| P2  |
+| P3  |
++-----+
+3 rows in set (0.00 sec)
+
+mysql> SELECT SPP.PID,SPP.SID,SPP.JID FROM SPP,SUPPLIERS WHERE SUPPLIERS.CITY='LONDON' AND SPP.SID=SUPPLIERS.SID UNION SELECT SPP.PID,SPP.SID,SPP.JID FROM SPP,PROJECTS WHERE PROJECTS.CITY='LONDON' AND SPP.JID=PROJECTS.JID;
++-----+-----+-----+
+| PID | SID | JID |
++-----+-----+-----+
+| P1  | S1  | J1  |
+| P2  | S1  | J4  |
+| P3  | S1  | J5  |
+| P3  | S4  | J2  |
+| P1  | S3  | J1  |
+| P3  | S2  | J2  |
++-----+-----+-----+
+6 rows in set (0.00 sec)
+
+35.Get supplier-number/part-number pairs such that the indicated supplier does not supply the indicated part.
+
+mysql> SELECT SID,PID FROM SUPPLIERS,PARTS WHERE NOT EXISTS(SELECT * FROM SPP WHERE SPP.SID=SUPPLIERS.SID AND SPP.PID=PARTS.PID)ORDER BY SID,PID;
++-----+-----+
+| SID | PID |
++-----+-----+
+| S1  | P4  |
+| S1  | P5  |
+| S1  | P6  |
+| S2  | P1  |
+| S2  | P2  |
+| S2  | P4  |
+| S2  | P5  |
+| S3  | P2  |
+| S3  | P3  |
+| S3  | P4  |
+| S3  | P5  |
+| S3  | P6  |
+| S4  | P1  |
+| S4  | P2  |
+| S4  | P4  |
+| S4  | P5  |
+| S4  | P6  |
+| S5  | P1  |
+| S5  | P2  |
+| S5  | P3  |
+| S5  | P5  |
+| S5  | P6  |
+| S6  | P1  |
+| S6  | P2  |
+| S6  | P3  |
+| S6  | P4  |
+| S6  | P5  |
+| S6  | P6  |
++-----+-----+
+28 rows in set (0.00 sec)
+
