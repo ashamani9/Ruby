@@ -1,0 +1,61 @@
+<%= simple_form_for @user do |f| %>
+<h1 align = "center"> User Form </h1>
+<%= f.error_notification %>
+<%= f.input :first_name, :input_html => {:style=> 'width: 220px'} %>
+<%= f.input :middle_name, :input_html => {:size => 25} %>
+<%= f.input :last_name %>
+
+<%= f.input :gender, :collection => ['Male', 'Female'], :as => :radio_buttons %>
+
+<%= f.input :email, placeholder: "user@domain.com" %>
+<%= f.input :other_email %>
+<%= f.input :address1 %>
+<%= f.input :address2 %>
+
+<%= f.input :city, :collection => ['Visakhapatnam', 'kakinada','Rajasthan', 'Chennai', 'Hyderabad', 'Vijayawada'], :prompt => 'Select a City' %>
+
+<%= f.input :state, :collection => ['AndhraPradesh', 'Telangana', 'Tamilnadu', 'Rajasthan', 'karnataka'], :prompt => 'Select a State' %>
+
+<%= f.input :country, :collection => ['India', 'Brazil', 'Australia', 'England', 'Srilanka'] %>
+
+<%= f.input :zip %>
+<%= f.input :phone_no %>
+<%= f.input :cell_no %>
+<%= f.input :fax %>
+<%= f.input :rank_id %>
+<%= f.input :paid_rank_id %>
+
+<%= f.input :preferred_language, :collection => ['Telugu', 'English', 'Hindi', 'Tamil', 'Kannada', 'Malayalam', 'Urdu'], :prompt => 'Please select a language' %>
+
+<%= f.input :username %>
+<%= f.input :password %>
+<%= f.input :password_confirmation %>
+
+
+
+
+<h1 align = "center"> Profile Form </h1>
+
+      <%= f.simple_fields_for :profile do |p| %>
+        <%= p.input :first_name %>
+        <%= p.input :last_name %>
+        <%= p.input :email %>
+        <%= p.input :phone_no %>
+        <%= p.input :cell_no %>
+        <%= p.input :gender, :collection => ['Male', 'Female'], :as => :radio_buttons %>
+        <%= p.input :education %>
+        <%= p.input :address %>
+        <%= p.input :fax %>
+        <%= p.input :rank_id %>
+        <%= p.input :hometown %>
+        <%= p.input :story %>
+        <%= p.input :movies %>
+        <%= p.input :other_emails %>
+        <%= p.input :phone_visibility %>
+        <%= p.input :address_visibility %>
+        <%= p.input :email_visibility %>
+         <% end %>
+        <%= f.button :submit, "Submit" %>
+        <%= f.button :button, "Cancel", type: :reset %>
+      <% end %>
+    

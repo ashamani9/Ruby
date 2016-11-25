@@ -1,0 +1,46 @@
+<p>
+  <strong> First_name: </strong>
+  <%= @contact.first_name %>
+</p>
+
+<p>
+  <strong> Last_name: </strong>
+  <%= @contact.last_name %>
+</p>
+
+<p>
+  <strong> Contact_type: </strong>
+  <%= @contact.contact_type %>
+</p>
+
+<p>
+  <strong> Address1: </strong>
+  <%= @contact.address1 %>
+</p>
+
+<p>
+  <strong> Address2: </strong>
+  <%= @contact.address2 %>
+</p>
+
+<p>
+  <strong> City: </strong>
+  <%= @contact.city %>
+ </p>
+
+ <p> 
+   <strong> State: </strong>
+   <%= @contact.state %>
+ </p>
+
+ <p>
+   <strong> Phone_no: </strong>
+   <%= @contact.phone_no %>
+ </p>
+
+ <p>
+   <strong> Birthday: </strong>
+   <%= @contact.birthday %>
+  </p>
+
+  <%= link_to 'Back', contacts_path, data: {confirm: 'Are you Sure'} %>

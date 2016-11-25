@@ -1,0 +1,89 @@
+<h1 align = "center"> Profile Details </h1>
+
+<p>
+  <strong>First Name:</strong>
+  <%= @profile.first_name %>
+</p>
+
+<p>
+  <strong>Last Name:</strong>
+  <%= @profile.last_name %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @profile.email %>
+</p>
+
+<p>
+  <strong>Phone_no:</strong>
+  <%= @profile.phone_no%>
+</p>
+<p>
+  <strong>Cell_no:</strong>
+  <%= @profile.cell_no%>
+</p>
+
+<p>
+  <strong> Gender: </strong>
+  <%= @profile.gender %>
+</p>
+
+<p>
+  <strong> Education: </strong>
+  <%= @profile.education %>
+</p>
+
+<p>
+  <strong>Address:</strong>
+  <%= @profile.address %>
+</p>
+
+<p>
+  <strong> Fax: </strong>
+  <%= @profile.fax %>
+</p>
+
+<p>
+  <strong> Rank_id: </strong>
+  <%= @profile.rank_id %>
+</p>
+
+<p> 
+  <strong> Hometown: </strong>
+  <%= @profile.hometown %>
+</p>
+
+<p>
+  <strong> Story: </strong>
+  <%= @profile.story %>
+</p>
+
+<p>
+  <strong> Movies: </strong>
+  <%= @profile.movies %>
+</p>
+
+<p>
+  <strong> Other Emails: </strong>
+  <%= @profile.other_emails %>
+</p>
+
+<p>
+  <strong> Phone_Visibility: </strong>
+  <%= @profile.phone_visibility %>
+</p>
+
+<p>
+  <strong> Address_Visibility: </strong>
+  <%= @profile.address_visibility %>
+</p>
+
+<p>
+  <strong> Email_Visibility: </strong>
+  <%= @profile.email_visibility %>
+</p>
+
+<%= link_to "Add Contacts", new_contact_path %>
+<%= button_to :ListOfContacts, { :controller => :contacts, :action => "index",  }, :method => :get %>
+

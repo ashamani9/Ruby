@@ -1,0 +1,23 @@
+body {
+  background: #becdb3;
+  color: black;
+ font-family: "Times New Roman", Times, serif;
+  margin: 20px 50px;
+  
+  font-size: 18px;
+  line-height: 2.0;
+}
+
+.simple_form label {
+  float: left;
+  width: 350px;
+  text-align: center;
+  
+}
+
+
+
+.simple_form div.boolean, .simple_form input[type='submit'] {
+  margin-left: 150px;
+}
+
