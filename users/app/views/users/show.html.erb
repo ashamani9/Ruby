@@ -1,0 +1,91 @@
+<% @user = User.new %>
+<% @user.build_profile %>
+<h1> Profile Details </h1>
+
+<p>
+  <strong>First Name:</strong>
+  <%= @user.profile.first_name %>
+</p>
+
+<p>
+  <strong>Last Name:</strong>
+  <%= @user.profile.last_name %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @user.profile.email %>
+</p>
+
+<p>
+  <strong>Phone_no:</strong>
+  <%= @user.profile.phone_no%>
+</p>
+<p>
+  <strong>Cell_no:</strong>
+  <%= @user.profile.cell_no%>
+</p>
+
+<p>
+  <strong> Gender: </strong>
+  <%= @user.profile.gender %>
+</p>
+
+<p>
+  <strong> Education: </strong>
+  <%= @user.profile.education %>
+</p>
+
+<p>
+  <strong>Address:</strong>
+  <%= @user.profile.address %>
+</p>
+
+<p>
+  <strong> Fax: </strong>
+  <%= @user.profile.fax %>
+</p>
+
+<p>
+  <strong> Rank_id: </strong>
+  <%= @user.profile.rank_id %>
+</p>
+
+<p> 
+  <strong> Hometown: </strong>
+  <%= @user.profile.hometown %>
+</p>
+
+<p>
+  <strong> Story: </strong>
+  <%= @user.profile.story %>
+</p>
+
+<p>
+  <strong> Movies: </strong>
+  <%= @user.profile.movies %>
+</p>
+
+<p>
+  <strong> Other Emails: </strong>
+  <%= @user.profile.other_emails %>
+</p>
+
+<p>
+  <strong> Phone_Visibility: </strong>
+  <%= @user.profile.phone_visibility %>
+</p>
+
+<p>
+  <strong> Address_Visibility: </strong>
+  <%= @user.profile.address_visibility %>
+</p>
+
+<p>
+  <strong> Email_Visibility: </strong>
+  <%= @user.profile.email_visibility %>
+</p>
+
+<%= link_to "Add Contacts", new_contact_path %>
+
+

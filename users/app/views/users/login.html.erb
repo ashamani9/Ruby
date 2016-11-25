@@ -1,0 +1,6 @@
+<%= simple_form_for @log, :url => url_for(:action => 'sh', :controller => 'users'),:method => 'get' do |u| %>
+
+  <%= u.input :username %>
+  <%= u.input :password %>
+  <%= u.button :submit, 'Login' %>
+ <% end %>
